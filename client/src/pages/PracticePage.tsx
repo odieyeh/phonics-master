@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Loader2, ChevronLeft, ChevronRight } from "lucide-react";
+import { Loader2, ChevronLeft, ChevronRight, ArrowLeft, Home } from "lucide-react";
+import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Flashcard } from "@/components/Flashcard";
 import { ScoreResult } from "@/components/ScoreResult";
@@ -12,6 +13,7 @@ type PageState = "loading" | "flashcard" | "scoring" | "result";
 
 export default function PracticePage() {
   const { user } = useAuth();
+  const [, setLocation] = useLocation();
   const [pageState, setPageState] = useState<PageState>("loading");
   const [vocabularies, setVocabularies] = useState<Vocabulary[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -156,6 +158,26 @@ export default function PracticePage() {
             <p className="text-muted-foreground">
               Practice {currentIndex + 1} of {vocabularies.length}
             </p>
+          </div>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              className="gap-2"
+              onClick={() => window.history.back()}
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Back
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              className="gap-2"
+              onClick={() => setLocation("/")}
+            >
+              <Home className="h-4 w-4" />
+              Home
+            </Button>
           </div>
         </div>
 
