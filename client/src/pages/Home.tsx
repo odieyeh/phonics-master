@@ -1,6 +1,6 @@
 import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
-import { Loader2, BookOpen, Zap, Target, Award } from "lucide-react";
+import { Loader2, BookOpen, Zap, Target, Award, Settings } from "lucide-react";
 import { getLoginUrl } from "@/const";
 import { useLocation } from "wouter";
 
@@ -29,6 +29,17 @@ export default function Home() {
                 <span className="text-sm text-muted-foreground">
                   Welcome, {user.name || "Student"}!
                 </span>
+                {user.role === "admin" && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="gap-2"
+                    onClick={() => setLocation("/admin")}
+                  >
+                    <Settings className="h-4 w-4" />
+                    Admin
+                  </Button>
+                )}
                 <Button
                   variant="outline"
                   size="sm"
@@ -64,7 +75,7 @@ export default function Home() {
             <Button
               size="lg"
               className="gap-2 text-lg"
-              onClick={() => setLocation("/practice")}
+              onClick={() => setLocation("/units")}
             >
               <Zap className="h-5 w-5" />
               Start Practicing Now
@@ -190,7 +201,7 @@ export default function Home() {
               size="lg"
               variant="secondary"
               className="gap-2"
-              onClick={() => setLocation("/practice")}
+              onClick={() => setLocation("/units")}
             >
               <Zap className="h-5 w-5" />
               Begin Practice

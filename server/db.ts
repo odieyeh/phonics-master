@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users, vocabularies, learningRecords, userProgress, InsertVocabulary, InsertLearningRecord, InsertUserProgress } from "../drizzle/schema";
+import { InsertUser, users, vocabularies, learningRecords, userProgress, InsertVocabulary, InsertLearningRecord, InsertUserProgress, units, Unit, InsertUnit } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -180,4 +180,46 @@ export async function bulkCreateVocabularies(vocabs: InsertVocabulary[]) {
   if (!db) throw new Error("Database not available");
   if (vocabs.length === 0) return;
   await db.insert(vocabularies).values(vocabs);
+}
+
+// ============ Unit Management ============
+
+export async function getUnits(limit: number = 100, offset: number = 0) {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(units).orderBy(units.order).limit(limit).offset(offset);
+}
+
+export async function getUnitById(id: number) {
+  const db = await getDb();
+  if (!db) return undefined;
+  const result = await db.select().from(units).where(eq(units.id, id)).limit(1);
+  return result.length > 0 ? result[0] : undefined;
+}
+
+export async function createUnit(unit: InsertUnit) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const result = await db.insert(units).values(unit);
+  return result;
+}
+
+export async function updateUnit(id: number, unit: Partial<InsertUnit>) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  await db.update(units).set(unit).where(eq(units.id, id));
+}
+
+export async function deleteUnit(id: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  // Also update vocabularies to remove unitId reference
+  await db.update(vocabularies).set({ unitId: null }).where(eq(vocabularies.unitId, id));
+  await db.delete(units).where(eq(units.id, id));
+}
+
+export async function getVocabulariesByUnit(unitId: number, limit: number = 100, offset: number = 0) {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(vocabularies).where(eq(vocabularies.unitId, unitId)).limit(limit).offset(offset);
 }

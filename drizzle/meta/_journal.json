@@ -15,6 +15,13 @@
       "when": 1772089558165,
       "tag": "0001_goofy_thunderbird",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1772093990147,
+      "tag": "0002_equal_pestilence",
+      "breakpoints": true
     }
   ]
 }

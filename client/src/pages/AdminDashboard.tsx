@@ -7,6 +7,7 @@ import { useLocation } from "wouter";
 import VocabularyTable from "@/components/admin/VocabularyTable";
 import BulkUploadDialog from "@/components/admin/BulkUploadDialog";
 import EditVocabularyDialog from "@/components/admin/EditVocabularyDialog";
+import UnitManagement from "@/components/admin/UnitManagement";
 import { toast } from "sonner";
 
 export default function AdminDashboard() {
@@ -39,7 +40,7 @@ export default function AdminDashboard() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="gradient-text text-3xl font-bold">Admin Dashboard</h1>
-              <p className="text-muted-foreground">Manage vocabularies and content</p>
+              <p className="text-muted-foreground">Manage units, vocabularies and content</p>
             </div>
             <Button
               onClick={() => setLocation("/")}
@@ -54,11 +55,17 @@ export default function AdminDashboard() {
       {/* Main Content */}
       <div className="container mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-4">
+            <TabsTrigger value="units">Manage Units</TabsTrigger>
             <TabsTrigger value="manage">Manage Vocabularies</TabsTrigger>
             <TabsTrigger value="upload">Bulk Upload</TabsTrigger>
             <TabsTrigger value="stats">Statistics</TabsTrigger>
           </TabsList>
+
+          {/* Manage Units Tab */}
+          <TabsContent value="units" className="space-y-4">
+            <UnitManagement />
+          </TabsContent>
 
           {/* Manage Vocabularies Tab */}
           <TabsContent value="manage" className="space-y-4">

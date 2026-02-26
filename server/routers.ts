@@ -3,7 +3,7 @@ import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, protectedProcedure, router } from "./_core/trpc";
 import { z } from "zod";
-import { getVocabularies, getVocabularyById, createVocabulary, createLearningRecord, getUserLearningRecords, getUserProgress, upsertUserProgress, updateVocabulary, deleteVocabulary, getAllVocabularies, bulkCreateVocabularies } from "./db";
+import { getVocabularies, getVocabularyById, createVocabulary, createLearningRecord, getUserLearningRecords, getUserProgress, upsertUserProgress, updateVocabulary, deleteVocabulary, getAllVocabularies, bulkCreateVocabularies, getUnits, getUnitById, createUnit, updateUnit, deleteUnit, getVocabulariesByUnit } from "./db";
 import { scorePronunciation } from "./pronunciation-scorer";
 import { uploadAudio, validateAudioFile } from "./audio-service";
 
@@ -139,6 +139,73 @@ export const appRouter = router({
         
         const result = await uploadAudio(buffer, input.fileName, input.type);
         return result;
+      }),
+  }),
+
+  unit: router({
+    list: publicProcedure
+      .input(z.object({
+        limit: z.number().default(100),
+        offset: z.number().default(0),
+      }))
+      .query(async ({ input }) => {
+        return getUnits(input.limit, input.offset);
+      }),
+    
+    get: publicProcedure
+      .input(z.object({ id: z.number() }))
+      .query(async ({ input }) => {
+        return getUnitById(input.id);
+      }),
+    
+    getVocabularies: publicProcedure
+      .input(z.object({
+        unitId: z.number(),
+        limit: z.number().default(100),
+        offset: z.number().default(0),
+      }))
+      .query(async ({ input }) => {
+        return getVocabulariesByUnit(input.unitId, input.limit, input.offset);
+      }),
+    
+    create: protectedProcedure
+      .input(z.object({
+        name: z.string(),
+        description: z.string().optional(),
+        order: z.number().default(0),
+      }))
+      .mutation(async ({ input, ctx }) => {
+        if (ctx.user?.role !== "admin") {
+          throw new Error("Only admins can create units");
+        }
+        await createUnit(input);
+        return { success: true };
+      }),
+    
+    update: protectedProcedure
+      .input(z.object({
+        id: z.number(),
+        name: z.string().optional(),
+        description: z.string().optional(),
+        order: z.number().optional(),
+      }))
+      .mutation(async ({ input, ctx }) => {
+        if (ctx.user?.role !== "admin") {
+          throw new Error("Only admins can update units");
+        }
+        const { id, ...updateData } = input;
+        await updateUnit(id, updateData);
+        return { success: true };
+      }),
+    
+    delete: protectedProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(async ({ input, ctx }) => {
+        if (ctx.user?.role !== "admin") {
+          throw new Error("Only admins can delete units");
+        }
+        await deleteUnit(input.id);
+        return { success: true };
       }),
   }),
 

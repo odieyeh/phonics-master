@@ -26,10 +26,26 @@ export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
 
 /**
+ * Units (chapters/modules) table: organizes vocabularies into learning units
+ */
+export const units = mysqlTable("units", {
+  id: int("id").autoincrement().primaryKey(),
+  name: varchar("name", { length: 100 }).notNull(),
+  description: text("description"),
+  order: int("order").default(0), // display order
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type Unit = typeof units.$inferSelect;
+export type InsertUnit = typeof units.$inferInsert;
+
+/**
  * Vocabulary table: stores English words with phonetic transcription and example sentences
  */
 export const vocabularies = mysqlTable("vocabularies", {
   id: int("id").autoincrement().primaryKey(),
+  unitId: int("unitId"), // reference to unit (optional, for organizing vocabularies)
   word: varchar("word", { length: 100 }).notNull().unique(),
   ipa: varchar("ipa", { length: 100 }).notNull(), // IPA phonetic transcription
   exampleSentence: text("exampleSentence").notNull(),
