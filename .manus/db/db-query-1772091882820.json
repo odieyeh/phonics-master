@@ -1,0 +1,9 @@
+{
+  "query": "INSERT INTO vocabularies (word, ipa, exampleSentence, difficulty, wordAudioUrl, sentenceAudioUrl, createdAt, updatedAt) VALUES\n('apple', 'ˈæpəl', 'I eat a red apple every day.', 'beginner', NULL, NULL, NOW(), NOW()),\n('cat', 'kæt', 'The cat is sleeping on the mat.', 'beginner', NULL, NULL, NOW(), NOW()),\n('dog', 'dɔːɡ', 'My dog loves to play in the park.', 'beginner', NULL, NULL, NOW(), NOW()),\n('happy', 'ˈhæpi', 'She is very happy today.', 'beginner', NULL, NULL, NOW(), NOW()),\n('water', 'ˈwɔːtər', 'Please drink some water.', 'beginner', NULL, NULL, NOW(), NOW());",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway04.us-east-1.prod.aws.tidbcloud.com --port 4000 --user hGf1FKvg3orn7ZY.root --database bMXvqNN29ovrkVWu7SNu7A --execute INSERT INTO vocabularies (word, ipa, exampleSentence, difficulty, wordAudioUrl, sentenceAudioUrl, createdAt, updatedAt) VALUES\n('apple', 'ˈæpəl', 'I eat a red apple every day.', 'beginner', NULL, NULL, NOW(), NOW()),\n('cat', 'kæt', 'The cat is sleeping on the mat.', 'beginner', NULL, NULL, NOW(), NOW()),\n('dog', 'dɔːɡ', 'My dog loves to play in the park.', 'beginner', NULL, NULL, NOW(), NOW()),\n('happy', 'ˈhæpi', 'She is very happy today.', 'beginner', NULL, NULL, NOW(), NOW()),\n('water', 'ˈwɔːtər', 'Please drink some water.', 'beginner', NULL, NULL, NOW(), NOW());",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 1683
+}
