@@ -3,7 +3,7 @@ import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, protectedProcedure, router } from "./_core/trpc";
 import { z } from "zod";
-import { getVocabularies, getVocabularyById, createVocabulary, createLearningRecord, getUserLearningRecords, getUserProgress, upsertUserProgress } from "./db";
+import { getVocabularies, getVocabularyById, createVocabulary, createLearningRecord, getUserLearningRecords, getUserProgress, upsertUserProgress, updateVocabulary, deleteVocabulary, getAllVocabularies, bulkCreateVocabularies } from "./db";
 import { scorePronunciation } from "./pronunciation-scorer";
 
 export const appRouter = router({
@@ -50,6 +50,66 @@ export const appRouter = router({
         }
         await createVocabulary(input);
         return { success: true };
+      }),
+    
+    update: protectedProcedure
+      .input(z.object({
+        id: z.number(),
+        word: z.string().optional(),
+        ipa: z.string().optional(),
+        exampleSentence: z.string().optional(),
+        wordAudioUrl: z.string().optional(),
+        sentenceAudioUrl: z.string().optional(),
+        difficulty: z.enum(["beginner", "intermediate", "advanced"]).optional(),
+      }))
+      .mutation(async ({ input, ctx }) => {
+        if (ctx.user?.role !== "admin") {
+          throw new Error("Only admins can update vocabularies");
+        }
+        const { id, ...updateData } = input;
+        await updateVocabulary(id, updateData);
+        return { success: true };
+      }),
+    
+    delete: protectedProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(async ({ input, ctx }) => {
+        if (ctx.user?.role !== "admin") {
+          throw new Error("Only admins can delete vocabularies");
+        }
+        await deleteVocabulary(input.id);
+        return { success: true };
+      }),
+    
+    listAll: protectedProcedure
+      .input(z.object({
+        limit: z.number().default(1000),
+        offset: z.number().default(0),
+      }))
+      .query(async ({ input, ctx }) => {
+        if (ctx.user?.role !== "admin") {
+          throw new Error("Only admins can view all vocabularies");
+        }
+        return getAllVocabularies(input.limit, input.offset);
+      }),
+    
+    bulkCreate: protectedProcedure
+      .input(z.object({
+        vocabularies: z.array(z.object({
+          word: z.string(),
+          ipa: z.string(),
+          exampleSentence: z.string(),
+          wordAudioUrl: z.string().optional(),
+          sentenceAudioUrl: z.string().optional(),
+          difficulty: z.enum(["beginner", "intermediate", "advanced"]).default("beginner"),
+        })),
+      }))
+      .mutation(async ({ input, ctx }) => {
+        if (ctx.user?.role !== "admin") {
+          throw new Error("Only admins can bulk create vocabularies");
+        }
+        await bulkCreateVocabularies(input.vocabularies);
+        return { success: true, count: input.vocabularies.length };
       }),
   }),
 

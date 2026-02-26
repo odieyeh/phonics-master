@@ -153,3 +153,31 @@ export async function upsertUserProgress(userId: number, data: Partial<InsertUse
     await db.insert(userProgress).values({ userId, ...data });
   }
 }
+
+/**
+ * Vocabulary management functions
+ */
+export async function updateVocabulary(id: number, vocab: Partial<InsertVocabulary>) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  await db.update(vocabularies).set(vocab).where(eq(vocabularies.id, id));
+}
+
+export async function deleteVocabulary(id: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  await db.delete(vocabularies).where(eq(vocabularies.id, id));
+}
+
+export async function getAllVocabularies(limit: number = 1000, offset: number = 0) {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(vocabularies).limit(limit).offset(offset);
+}
+
+export async function bulkCreateVocabularies(vocabs: InsertVocabulary[]) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  if (vocabs.length === 0) return;
+  await db.insert(vocabularies).values(vocabs);
+}
