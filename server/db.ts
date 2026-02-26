@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users } from "../drizzle/schema";
+import { InsertUser, users, vocabularies, learningRecords, userProgress, InsertVocabulary, InsertLearningRecord, InsertUserProgress } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -89,4 +89,67 @@ export async function getUserByOpenId(openId: string) {
   return result.length > 0 ? result[0] : undefined;
 }
 
-// TODO: add feature queries here as your schema grows.
+export async function getUserById(id: number) {
+  const db = await getDb();
+  if (!db) return undefined;
+  const result = await db.select().from(users).where(eq(users.id, id)).limit(1);
+  return result.length > 0 ? result[0] : undefined;
+}
+
+/**
+ * Vocabulary queries
+ */
+export async function getVocabularies(limit: number = 50, offset: number = 0) {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(vocabularies).limit(limit).offset(offset);
+}
+
+export async function getVocabularyById(id: number) {
+  const db = await getDb();
+  if (!db) return undefined;
+  const result = await db.select().from(vocabularies).where(eq(vocabularies.id, id)).limit(1);
+  return result.length > 0 ? result[0] : undefined;
+}
+
+export async function createVocabulary(vocab: InsertVocabulary) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  await db.insert(vocabularies).values(vocab);
+}
+
+/**
+ * Learning record queries
+ */
+export async function createLearningRecord(record: InsertLearningRecord) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  await db.insert(learningRecords).values(record);
+}
+
+export async function getUserLearningRecords(userId: number, limit: number = 50) {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(learningRecords).where(eq(learningRecords.userId, userId)).limit(limit);
+}
+
+/**
+ * User progress queries
+ */
+export async function getUserProgress(userId: number) {
+  const db = await getDb();
+  if (!db) return undefined;
+  const result = await db.select().from(userProgress).where(eq(userProgress.userId, userId)).limit(1);
+  return result.length > 0 ? result[0] : undefined;
+}
+
+export async function upsertUserProgress(userId: number, data: Partial<InsertUserProgress>) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const existing = await getUserProgress(userId);
+  if (existing) {
+    await db.update(userProgress).set(data).where(eq(userProgress.userId, userId));
+  } else {
+    await db.insert(userProgress).values({ userId, ...data });
+  }
+}
