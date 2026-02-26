@@ -68,8 +68,9 @@ describe("Admin Vocabulary Management", () => {
   describe("vocabulary.create", () => {
     it("should allow admin to create vocabulary", async () => {
       const caller = appRouter.createCaller(createAdminContext());
+      const ts = Date.now();
       const result = await caller.vocabulary.create({
-        word: "test",
+        word: `test_${ts}`,
         ipa: "test",
         exampleSentence: "This is a test.",
         difficulty: "beginner",
@@ -80,8 +81,9 @@ describe("Admin Vocabulary Management", () => {
     it("should deny regular user from creating vocabulary", async () => {
       const caller = appRouter.createCaller(createUserContext());
       try {
+        const ts = Date.now();
         await caller.vocabulary.create({
-          word: "test",
+          word: `test_user_${ts}`,
           ipa: "test",
           exampleSentence: "This is a test.",
           difficulty: "beginner",
@@ -138,16 +140,17 @@ describe("Admin Vocabulary Management", () => {
   describe("vocabulary.bulkCreate", () => {
     it("should allow admin to bulk create vocabularies", async () => {
       const caller = appRouter.createCaller(createAdminContext());
+      const ts = Date.now();
       const result = await caller.vocabulary.bulkCreate({
         vocabularies: [
           {
-            word: "bulk1",
+            word: `bulk1_${ts}`,
             ipa: "bulk1",
             exampleSentence: "Bulk test 1.",
             difficulty: "beginner",
           },
           {
-            word: "bulk2",
+            word: `bulk2_${ts}`,
             ipa: "bulk2",
             exampleSentence: "Bulk test 2.",
             difficulty: "intermediate",
@@ -161,10 +164,11 @@ describe("Admin Vocabulary Management", () => {
     it("should deny regular user from bulk creating vocabularies", async () => {
       const caller = appRouter.createCaller(createUserContext());
       try {
+        const ts = Date.now();
         await caller.vocabulary.bulkCreate({
           vocabularies: [
             {
-              word: "bulk1",
+              word: `bulk_user_${ts}`,
               ipa: "bulk1",
               exampleSentence: "Bulk test 1.",
               difficulty: "beginner",

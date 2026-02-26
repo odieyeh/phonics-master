@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Loader2 } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
+import AudioUploadField from "./AudioUploadField";
 import type { Vocabulary } from "@shared/types";
 
 interface EditVocabularyDialogProps {
@@ -151,28 +152,20 @@ export default function EditVocabularyDialog({
             </Select>
           </div>
 
-          {/* Audio URLs (Optional) */}
+          {/* Audio Upload Fields */}
           <div className="grid gap-4 md:grid-cols-2">
-            <div className="space-y-2">
-              <Label htmlFor="wordAudioUrl">Word Audio URL</Label>
-              <Input
-                id="wordAudioUrl"
-                value={formData.wordAudioUrl}
-                onChange={(e) => setFormData({ ...formData, wordAudioUrl: e.target.value })}
-                placeholder="Optional"
-                disabled={isLoading}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="sentenceAudioUrl">Sentence Audio URL</Label>
-              <Input
-                id="sentenceAudioUrl"
-                value={formData.sentenceAudioUrl}
-                onChange={(e) => setFormData({ ...formData, sentenceAudioUrl: e.target.value })}
-                placeholder="Optional"
-                disabled={isLoading}
-              />
-            </div>
+            <AudioUploadField
+              label="Word Audio"
+              type="word"
+              currentUrl={formData.wordAudioUrl}
+              onUrlChange={(url) => setFormData({ ...formData, wordAudioUrl: url })}
+            />
+            <AudioUploadField
+              label="Sentence Audio"
+              type="sentence"
+              currentUrl={formData.sentenceAudioUrl}
+              onUrlChange={(url) => setFormData({ ...formData, sentenceAudioUrl: url })}
+            />
           </div>
         </form>
 

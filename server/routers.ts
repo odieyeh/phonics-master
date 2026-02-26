@@ -5,6 +5,7 @@ import { publicProcedure, protectedProcedure, router } from "./_core/trpc";
 import { z } from "zod";
 import { getVocabularies, getVocabularyById, createVocabulary, createLearningRecord, getUserLearningRecords, getUserProgress, upsertUserProgress, updateVocabulary, deleteVocabulary, getAllVocabularies, bulkCreateVocabularies } from "./db";
 import { scorePronunciation } from "./pronunciation-scorer";
+import { uploadAudio, validateAudioFile } from "./audio-service";
 
 export const appRouter = router({
   system: systemRouter,
@@ -110,6 +111,34 @@ export const appRouter = router({
         }
         await bulkCreateVocabularies(input.vocabularies);
         return { success: true, count: input.vocabularies.length };
+      }),
+  }),
+
+  audio: router({
+    upload: protectedProcedure
+      .input(z.object({
+        audioBase64: z.string(),
+        fileName: z.string(),
+        type: z.enum(["word", "sentence"]),
+      }))
+      .mutation(async ({ input, ctx }) => {
+        if (ctx.user?.role !== "admin") {
+          throw new Error("Only admins can upload audio");
+        }
+        
+        const buffer = Buffer.from(input.audioBase64, "base64");
+        
+        const validation = validateAudioFile({
+          size: buffer.length,
+          type: "audio/mpeg",
+        });
+        
+        if (!validation.valid) {
+          throw new Error(validation.error);
+        }
+        
+        const result = await uploadAudio(buffer, input.fileName, input.type);
+        return result;
       }),
   }),
 

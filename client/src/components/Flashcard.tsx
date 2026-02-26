@@ -64,9 +64,18 @@ export function Flashcard({
   };
 
   const playAudio = (audioUrl?: string) => {
-    if (!audioUrl) return;
-    const audio = new Audio(audioUrl);
-    audio.play();
+    if (!audioUrl) {
+      console.log("No audio URL provided");
+      return;
+    }
+    try {
+      const audio = new Audio(audioUrl);
+      audio.play().catch((error) => {
+        console.error("Error playing audio:", error);
+      });
+    } catch (error) {
+      console.error("Error creating audio:", error);
+    }
   };
 
   return (
