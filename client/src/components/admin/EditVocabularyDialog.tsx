@@ -9,6 +9,9 @@ import { Loader2 } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 import AudioUploadField from "./AudioUploadField";
+import AudioRecorder from "./AudioRecorder";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Mic, Upload } from "lucide-react";
 import type { Vocabulary } from "@shared/types";
 
 interface EditVocabularyDialogProps {
@@ -152,20 +155,70 @@ export default function EditVocabularyDialog({
             </Select>
           </div>
 
-          {/* Audio Upload Fields */}
-          <div className="grid gap-4 md:grid-cols-2">
-            <AudioUploadField
-              label="Word Audio"
-              type="word"
-              currentUrl={formData.wordAudioUrl}
-              onUrlChange={(url) => setFormData({ ...formData, wordAudioUrl: url })}
-            />
-            <AudioUploadField
-              label="Sentence Audio"
-              type="sentence"
-              currentUrl={formData.sentenceAudioUrl}
-              onUrlChange={(url) => setFormData({ ...formData, sentenceAudioUrl: url })}
-            />
+          {/* Audio Section */}
+          <div className="space-y-3">
+            <Label className="text-sm font-semibold">Audio Pronunciation</Label>
+            <div className="grid gap-4 md:grid-cols-2">
+              {/* Word Audio */}
+              <div className="space-y-2">
+                <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide">Word Audio</p>
+                <Tabs defaultValue="record">
+                  <TabsList className="w-full h-8">
+                    <TabsTrigger value="record" className="flex-1 text-xs gap-1">
+                      <Mic className="h-3 w-3" /> Record
+                    </TabsTrigger>
+                    <TabsTrigger value="upload" className="flex-1 text-xs gap-1">
+                      <Upload className="h-3 w-3" /> Upload
+                    </TabsTrigger>
+                  </TabsList>
+                  <TabsContent value="record" className="mt-2">
+                    <AudioRecorder
+                      label="Word Pronunciation"
+                      existingUrl={formData.wordAudioUrl || null}
+                      onUploadComplete={(url) => setFormData({ ...formData, wordAudioUrl: url })}
+                    />
+                  </TabsContent>
+                  <TabsContent value="upload" className="mt-2">
+                    <AudioUploadField
+                      label="Word Audio"
+                      type="word"
+                      currentUrl={formData.wordAudioUrl}
+                      onUrlChange={(url) => setFormData({ ...formData, wordAudioUrl: url })}
+                    />
+                  </TabsContent>
+                </Tabs>
+              </div>
+
+              {/* Sentence Audio */}
+              <div className="space-y-2">
+                <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide">Sentence Audio</p>
+                <Tabs defaultValue="record">
+                  <TabsList className="w-full h-8">
+                    <TabsTrigger value="record" className="flex-1 text-xs gap-1">
+                      <Mic className="h-3 w-3" /> Record
+                    </TabsTrigger>
+                    <TabsTrigger value="upload" className="flex-1 text-xs gap-1">
+                      <Upload className="h-3 w-3" /> Upload
+                    </TabsTrigger>
+                  </TabsList>
+                  <TabsContent value="record" className="mt-2">
+                    <AudioRecorder
+                      label="Sentence Pronunciation"
+                      existingUrl={formData.sentenceAudioUrl || null}
+                      onUploadComplete={(url) => setFormData({ ...formData, sentenceAudioUrl: url })}
+                    />
+                  </TabsContent>
+                  <TabsContent value="upload" className="mt-2">
+                    <AudioUploadField
+                      label="Sentence Audio"
+                      type="sentence"
+                      currentUrl={formData.sentenceAudioUrl}
+                      onUrlChange={(url) => setFormData({ ...formData, sentenceAudioUrl: url })}
+                    />
+                  </TabsContent>
+                </Tabs>
+              </div>
+            </div>
           </div>
         </form>
 
