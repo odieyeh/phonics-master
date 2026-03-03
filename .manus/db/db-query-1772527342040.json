@@ -1,0 +1,16 @@
+{
+  "query": "SELECT id, word, wordAudioUrl, sentenceAudioUrl FROM vocabularies WHERE word = 'cat' LIMIT 1;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway04.us-east-1.prod.aws.tidbcloud.com --port 4000 --user hGf1FKvg3orn7ZY.root --database bMXvqNN29ovrkVWu7SNu7A --execute SELECT id, word, wordAudioUrl, sentenceAudioUrl FROM vocabularies WHERE word = 'cat' LIMIT 1;",
+  "rows": [
+    {
+      "id": "2",
+      "word": "cat",
+      "wordAudioUrl": "https://d2xsxph8kpxj0f.cloudfront.net/310519663105787064/bMXvqNN29ovrkVWu7SNu7A/audio/word/RVJBL3Wd.webm",
+      "sentenceAudioUrl": "https://d2xsxph8kpxj0f.cloudfront.net/310519663105787064/bMXvqNN29ovrkVWu7SNu7A/audio/word/fnspvv0_.webm"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tword\twordAudioUrl\tsentenceAudioUrl\n2\tcat\thttps://d2xsxph8kpxj0f.cloudfront.net/310519663105787064/bMXvqNN29ovrkVWu7SNu7A/audio/word/RVJBL3Wd.webm\thttps://d2xsxph8kpxj0f.cloudfront.net/310519663105787064/bMXvqNN29ovrkVWu7SNu7A/audio/word/fnspvv0_.webm\n",
+  "stderr": "",
+  "execution_time_ms": 1582
+}

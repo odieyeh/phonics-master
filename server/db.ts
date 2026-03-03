@@ -223,3 +223,65 @@ export async function getVocabulariesByUnit(unitId: number, limit: number = 100,
   if (!db) return [];
   return db.select().from(vocabularies).where(eq(vocabularies.unitId, unitId)).limit(limit).offset(offset);
 }
+
+/**
+ * Learning statistics queries
+ */
+export async function getUserLearningStats(userId: number) {
+  const db = await getDb();
+  if (!db) return null;
+  
+  const records = await db.select().from(learningRecords).where(eq(learningRecords.userId, userId));
+  
+  if (records.length === 0) {
+    return {
+      totalPractices: 0,
+      averageScore: 0,
+      lastPracticeTime: null,
+      recordCount: 0,
+      excellentCount: 0,
+      goodCount: 0,
+      keepPracticingCount: 0,
+    };
+  }
+  
+  const totalScore = records.reduce((sum, r) => sum + r.score, 0);
+  const averageScore = Math.round(totalScore / records.length);
+  const lastPracticeTime = records[records.length - 1]?.createdAt;
+  
+  const excellentCount = records.filter(r => r.performanceLevel === 'excellent').length;
+  const goodCount = records.filter(r => r.performanceLevel === 'good').length;
+  const keepPracticingCount = records.filter(r => r.performanceLevel === 'keep_practicing').length;
+  
+  return {
+    totalPractices: records.length,
+    averageScore,
+    lastPracticeTime,
+    recordCount: records.length,
+    excellentCount,
+    goodCount,
+    keepPracticingCount,
+  };
+}
+
+export async function getAllUsersLearningStats() {
+  const db = await getDb();
+  if (!db) return [];
+  
+  const allUsers = await db.select().from(users);
+  const stats: any[] = [];
+  
+  for (const user of allUsers) {
+    const userStats = await getUserLearningStats(user.id);
+    if (userStats && userStats.totalPractices > 0) {
+      stats.push({
+        userId: user.id,
+        userName: user.name || user.email || 'Unknown',
+        email: user.email,
+        ...userStats,
+      });
+    }
+  }
+  
+  return stats;
+}

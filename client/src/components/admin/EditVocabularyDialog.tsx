@@ -32,7 +32,11 @@ export default function EditVocabularyDialog({
     difficulty: "beginner" as "beginner" | "intermediate" | "advanced",
     wordAudioUrl: "",
     sentenceAudioUrl: "",
+    unitId: null as number | null,
   });
+  
+  // Fetch units for dropdown
+  const { data: units = [] } = trpc.unit.list.useQuery({});
 
   useEffect(() => {
     if (vocabulary) {
@@ -43,6 +47,7 @@ export default function EditVocabularyDialog({
         difficulty: vocabulary.difficulty || "beginner",
         wordAudioUrl: vocabulary.wordAudioUrl || "",
         sentenceAudioUrl: vocabulary.sentenceAudioUrl || "",
+        unitId: vocabulary.unitId || null,
       });
     }
   }, [vocabulary]);
@@ -89,14 +94,14 @@ export default function EditVocabularyDialog({
 
   return (
     <Dialog open={true} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl">
-        <DialogHeader>
+      <DialogContent className="max-w-2xl max-h-[90vh] flex flex-col">
+        <DialogHeader className="flex-shrink-0">
           <DialogTitle>
             {vocabulary ? "Edit Vocabulary" : "Add New Vocabulary"}
           </DialogTitle>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4 overflow-y-auto flex-1 pr-1">
           {/* Word */}
           <div className="space-y-2">
             <Label htmlFor="word">Word *</Label>
@@ -151,6 +156,30 @@ export default function EditVocabularyDialog({
                 <SelectItem value="beginner">Beginner</SelectItem>
                 <SelectItem value="intermediate">Intermediate</SelectItem>
                 <SelectItem value="advanced">Advanced</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Unit Selection */}
+          <div className="space-y-2">
+            <Label htmlFor="unit">Unit (Optional)</Label>
+            <Select
+              value={formData.unitId?.toString() || ""}
+              onValueChange={(value) =>
+                setFormData({ ...formData, unitId: value ? parseInt(value) : null })
+              }
+              disabled={isLoading}
+            >
+              <SelectTrigger id="unit">
+                <SelectValue placeholder="Select a unit..." />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="">No Unit</SelectItem>
+                {units.map((unit) => (
+                  <SelectItem key={unit.id} value={unit.id.toString()}>
+                    {unit.name}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
@@ -222,7 +251,7 @@ export default function EditVocabularyDialog({
           </div>
         </form>
 
-        <DialogFooter>
+        <DialogFooter className="flex-shrink-0 border-t pt-4">
           <Button variant="outline" onClick={onClose} disabled={isLoading}>
             Cancel
           </Button>

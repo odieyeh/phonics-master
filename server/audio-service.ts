@@ -1,5 +1,9 @@
 import { storagePut } from "./storage";
 import { nanoid } from "nanoid";
+import ffmpeg from "fluent-ffmpeg";
+import { writeFileSync, unlinkSync } from "fs";
+import { tmpdir } from "os";
+import { join } from "path";
 
 export interface AudioUploadResult {
   url: string;
@@ -20,14 +24,25 @@ export async function uploadAudio(
 ): Promise<AudioUploadResult> {
   // Generate unique file key
   const fileId = nanoid(8);
-  const ext = getFileExtension(fileName);
-  const relKey = `audio/${type}/${fileId}${ext}`;
-
-  // Determine content type
-  const contentType = getContentType(fileName);
+  
+  // Convert WebM to MP3 if needed
+  let finalBuffer = audioBuffer;
+  let finalExt = getFileExtension(fileName);
+  
+  if (fileName.toLowerCase().endsWith(".webm")) {
+    try {
+      finalBuffer = await convertWebmToMp3(audioBuffer);
+      finalExt = ".mp3";
+    } catch (error) {
+      console.warn("[Audio Service] WebM conversion failed, uploading as-is:", error);
+    }
+  }
+  
+  const relKey = `audio/${type}/${fileId}${finalExt}`;
+  const contentType = getContentType(finalExt);
 
   try {
-    const result = await storagePut(relKey, audioBuffer, contentType);
+    const result = await storagePut(relKey, finalBuffer, contentType);
     return {
       url: result.url,
       key: result.key,
@@ -36,6 +51,46 @@ export async function uploadAudio(
     console.error("[Audio Service] Upload failed:", error);
     throw new Error(`Failed to upload audio: ${error instanceof Error ? error.message : "Unknown error"}`);
   }
+}
+
+/**
+ * Convert WebM audio to MP3 format
+ */
+async function convertWebmToMp3(audioBuffer: Buffer | Uint8Array | string): Promise<Buffer> {
+  return new Promise((resolve, reject) => {
+    const inputPath = join(tmpdir(), `audio-${nanoid(8)}.webm`);
+    const outputPath = join(tmpdir(), `audio-${nanoid(8)}.mp3`);
+    
+    try {
+      // Write buffer to temporary file
+      const buffer = Buffer.isBuffer(audioBuffer) ? audioBuffer : Buffer.from(audioBuffer);
+      writeFileSync(inputPath, buffer);
+      
+      // Convert using ffmpeg
+      ffmpeg(inputPath)
+        .toFormat("mp3")
+        .on("error", (err: Error) => {
+          unlinkSync(inputPath);
+          reject(new Error(`FFmpeg conversion error: ${err.message}`));
+        })
+        .on("end", () => {
+          try {
+            const mp3Buffer = require("fs").readFileSync(outputPath);
+            unlinkSync(inputPath);
+            unlinkSync(outputPath);
+            resolve(mp3Buffer);
+          } catch (error) {
+            reject(error);
+          }
+        })
+        .save(outputPath);
+    } catch (error) {
+      try {
+        unlinkSync(inputPath);
+      } catch {}
+      reject(error);
+    }
+  });
 }
 
 /**
@@ -65,7 +120,8 @@ export async function uploadAudioPair(
  */
 function getFileExtension(fileName: string): string {
   const match = fileName.match(/\.[^.]*$/);
-  return match ? match[0] : ".mp3";
+  // Always return .mp3 for audio files since we convert WebM to MP3
+  return ".mp3";
 }
 
 /**

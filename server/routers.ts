@@ -44,6 +44,7 @@ export const appRouter = router({
         wordAudioUrl: z.string().optional(),
         sentenceAudioUrl: z.string().optional(),
         difficulty: z.enum(["beginner", "intermediate", "advanced"]).default("beginner"),
+        unitId: z.number().nullable().optional(),
       }))
       .mutation(async ({ input, ctx }) => {
         if (ctx.user?.role !== "admin") {
@@ -62,6 +63,7 @@ export const appRouter = router({
         wordAudioUrl: z.string().optional(),
         sentenceAudioUrl: z.string().optional(),
         difficulty: z.enum(["beginner", "intermediate", "advanced"]).optional(),
+        unitId: z.number().nullable().optional(),
       }))
       .mutation(async ({ input, ctx }) => {
         if (ctx.user?.role !== "admin") {

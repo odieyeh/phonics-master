@@ -70,6 +70,7 @@ export function Flashcard({
     }
     try {
       const audio = new Audio(audioUrl);
+      audio.crossOrigin = "anonymous";
       audio.play().catch((error) => {
         console.error("Error playing audio:", error);
       });
