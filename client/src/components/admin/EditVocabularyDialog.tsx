@@ -164,9 +164,9 @@ export default function EditVocabularyDialog({
           <div className="space-y-2">
             <Label htmlFor="unit">Unit (Optional)</Label>
             <Select
-              value={formData.unitId?.toString() || ""}
+              value={formData.unitId?.toString() || "0"}
               onValueChange={(value) =>
-                setFormData({ ...formData, unitId: value ? parseInt(value) : null })
+                setFormData({ ...formData, unitId: value === "0" ? null : parseInt(value) })
               }
               disabled={isLoading}
             >
@@ -174,7 +174,7 @@ export default function EditVocabularyDialog({
                 <SelectValue placeholder="Select a unit..." />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">No Unit</SelectItem>
+                <SelectItem value="0">No Unit</SelectItem>
                 {units.map((unit) => (
                   <SelectItem key={unit.id} value={unit.id.toString()}>
                     {unit.name}

@@ -1,7 +1,7 @@
 import { storagePut } from "./storage";
 import { nanoid } from "nanoid";
 import ffmpeg from "fluent-ffmpeg";
-import { writeFileSync, unlinkSync } from "fs";
+import { writeFileSync, unlinkSync, readFileSync } from "fs";
 import { tmpdir } from "os";
 import { join } from "path";
 
@@ -75,7 +75,7 @@ async function convertWebmToMp3(audioBuffer: Buffer | Uint8Array | string): Prom
         })
         .on("end", () => {
           try {
-            const mp3Buffer = require("fs").readFileSync(outputPath);
+            const mp3Buffer = readFileSync(outputPath);
             unlinkSync(inputPath);
             unlinkSync(outputPath);
             resolve(mp3Buffer);
