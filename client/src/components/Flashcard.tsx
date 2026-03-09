@@ -84,7 +84,7 @@ export function Flashcard({
       {/* Word Section */}
       <div className="mb-8 space-y-4">
         <div className="text-center">
-          <h1 className="gradient-text mb-2 text-5xl font-bold">
+          <h1 className="gradient-text mb-2 text-5xl font-[700]">
             {vocabulary.word}
           </h1>
           <p className="text-lg text-muted-foreground">{vocabulary.ipa}</p>

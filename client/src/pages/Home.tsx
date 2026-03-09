@@ -1,39 +1,41 @@
 import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
-import { Loader2, BookOpen, Zap, Target, Award, Settings } from "lucide-react";
+import { Loader2, BookOpen, Zap, Target, Award, Settings, Sparkles, Heart, Music } from "lucide-react";
 import { getLoginUrl } from "@/const";
 import { useLocation } from "wouter";
 
 /**
- * Phonics Master - Home Page
- * Elegant landing page with practice entry point
+ * Phonics Master - Home Page (Cute & Warm Design for Kids)
+ * Friendly landing page with playful design elements
  */
 export default function Home() {
   const { user, loading, isAuthenticated, logout } = useAuth();
   const [, setLocation] = useLocation();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/30">
+    <div className="min-h-screen bg-gradient-cute">
       {/* Navigation */}
-      <nav className="border-b border-border bg-card/50 backdrop-blur-sm">
+      <nav className="border-b-2 border-primary/20 bg-white/80 backdrop-blur-sm">
         <div className="container mx-auto flex items-center justify-between px-4 py-4">
-          <div className="flex items-center gap-2">
-            <BookOpen className="h-8 w-8 text-primary" />
-            <h1 className="gradient-text text-2xl font-bold">Phonics Master</h1>
+          <div className="flex items-center gap-3">
+            <div className="rounded-full bg-gradient-to-r from-primary to-secondary p-2">
+              <Music className="h-6 w-6 text-white" />
+            </div>
+            <h1 className="text-3xl font-[700] text-transparent bg-clip-text bg-gradient-to-r from-primary via-secondary to-accent">
+              Phonics Master
+            </h1>
           </div>
           <div className="flex items-center gap-4">
             {loading ? (
-              <Loader2 className="h-5 w-5 animate-spin" />
+              <Loader2 className="h-5 w-5 animate-spin text-primary" />
             ) : isAuthenticated && user ? (
               <>
-                <span className="text-sm text-muted-foreground">
-                  Welcome, {user.name || "Student"}!
+                <span className="text-sm font-medium text-foreground">
+                  👋 Hi, {user.name || "Student"}!
                 </span>
                 {user.role === "admin" && (
                   <Button
-                    variant="outline"
-                    size="sm"
-                    className="gap-2"
+                    className="btn-cute-primary gap-2"
                     onClick={() => setLocation("/admin")}
                   >
                     <Settings className="h-4 w-4" />
@@ -41,8 +43,7 @@ export default function Home() {
                   </Button>
                 )}
                 <Button
-                  variant="outline"
-                  size="sm"
+                  className="btn-cute-secondary gap-2"
                   onClick={() => logout()}
                 >
                   Logout
@@ -50,7 +51,7 @@ export default function Home() {
               </>
             ) : (
               <Button
-                size="sm"
+                className="btn-cute-primary"
                 onClick={() => (window.location.href = getLoginUrl())}
               >
                 Login
@@ -61,127 +62,123 @@ export default function Home() {
       </nav>
 
       {/* Hero Section */}
-      <section className="container mx-auto px-4 py-20 text-center">
-        <div className="mx-auto max-w-3xl space-y-6">
-          <h2 className="gradient-text text-5xl font-bold md:text-6xl">
-            Master English Pronunciation
+      <section className="container mx-auto px-4 py-16 md:py-24 text-center">
+        <div className="mx-auto max-w-3xl space-y-8">
+          {/* Animated emoji */}
+          <div className="text-6xl md:text-7xl animate-bounce-gentle">
+            🎵
+          </div>
+          
+          <h2 className="text-display text-transparent bg-clip-text bg-gradient-to-r from-primary via-secondary to-accent">
+            Learn English Pronunciation! 🌟
           </h2>
-          <p className="text-xl text-muted-foreground">
-            Learn to pronounce English words perfectly with AI-powered feedback.
-            Practice, listen, record, and improve your pronunciation skills.
+          
+          <p className="text-body text-foreground/80 max-w-2xl mx-auto">
+            Welcome to Phonics Master! 🎉 A fun and friendly place to learn how to pronounce English words perfectly. Listen to native speakers, practice at your own pace, and have fun learning! 😊
           </p>
 
           {isAuthenticated ? (
             <Button
-              size="lg"
-              className="gap-2 text-lg"
+              className="btn-cute-primary gap-2 text-lg mx-auto"
               onClick={() => setLocation("/units")}
             >
-              <Zap className="h-5 w-5" />
-              Start Practicing Now
+              <Sparkles className="h-5 w-5" />
+              Start Learning Now! 🚀
             </Button>
           ) : (
             <Button
-              size="lg"
-              className="gap-2 text-lg"
+              className="btn-cute-primary gap-2 text-lg mx-auto"
               onClick={() => (window.location.href = getLoginUrl())}
             >
-              <Zap className="h-5 w-5" />
-              Get Started
+              <Sparkles className="h-5 w-5" />
+              Get Started! 🎊
             </Button>
           )}
         </div>
       </section>
 
       {/* Features Section */}
-      <section className="bg-muted/30 py-20">
+      <section className="py-16 md:py-24 bg-white/50">
         <div className="container mx-auto px-4">
-          <h3 className="mb-12 text-center text-3xl font-bold">
-            How It Works
+          <h3 className="text-heading text-center mb-12 text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">
+            How It Works ✨
           </h3>
 
           <div className="grid gap-8 md:grid-cols-3">
             {/* Feature 1 */}
-            <div className="card-elegant text-center">
-              <BookOpen className="mx-auto mb-4 h-12 w-12 text-primary" />
-              <h4 className="mb-2 text-xl font-semibold">See the Word</h4>
-              <p className="text-muted-foreground">
-                View vocabulary with IPA phonetic transcription and example
-                sentences to understand context.
+            <div className="card-cute text-center hover:shadow-xl transition-all transform hover:-translate-y-2">
+              <div className="text-5xl mb-4">👀</div>
+              <h4 className="mb-3 text-2xl font-[700] text-primary">See the Word</h4>
+              <p className="text-foreground/70 text-lg">
+                Look at cool English words with fun pronunciation guides and example sentences!
               </p>
             </div>
 
             {/* Feature 2 */}
-            <div className="card-elegant text-center">
-              <Zap className="mx-auto mb-4 h-12 w-12 text-secondary" />
-              <h4 className="mb-2 text-xl font-semibold">Listen & Record</h4>
-              <p className="text-muted-foreground">
-                Play native pronunciation and record your own voice to compare
-                with the target.
+            <div className="card-cute text-center hover:shadow-xl transition-all transform hover:-translate-y-2">
+              <div className="text-5xl mb-4">🎧</div>
+              <h4 className="mb-3 text-2xl font-[700] text-secondary">Listen & Learn</h4>
+              <p className="text-foreground/70 text-lg">
+                Hear how native speakers pronounce the words. Listen as many times as you want!
               </p>
             </div>
 
             {/* Feature 3 */}
-            <div className="card-elegant text-center">
-              <Award className="mx-auto mb-4 h-12 w-12 text-accent" />
-              <h4 className="mb-2 text-xl font-semibold">Get AI Feedback</h4>
-              <p className="text-muted-foreground">
-                Receive personalized feedback with pronunciation scores and
-                tips to improve.
+            <div className="card-cute text-center hover:shadow-xl transition-all transform hover:-translate-y-2">
+              <div className="text-5xl mb-4">⭐</div>
+              <h4 className="mb-3 text-2xl font-[700] text-accent">Have Fun!</h4>
+              <p className="text-foreground/70 text-lg">
+                Learn at your own pace with a friendly, encouraging environment. You've got this! 💪
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Benefits Section */}
-      <section className="py-20">
+      {/* Why Choose Section */}
+      <section className="py-16 md:py-24">
         <div className="container mx-auto px-4">
-          <h3 className="mb-12 text-center text-3xl font-bold">
-            Why Phonics Master?
+          <h3 className="text-heading text-center mb-12 text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent">
+            Why Phonics Master? 💡
           </h3>
 
-          <div className="grid gap-8 md:grid-cols-2">
-            <div className="flex gap-4">
-              <Target className="h-6 w-6 flex-shrink-0 text-primary" />
+          <div className="grid gap-6 md:grid-cols-2 max-w-2xl mx-auto">
+            <div className="card-cute flex gap-4 items-start">
+              <div className="text-4xl flex-shrink-0">🎯</div>
               <div>
-                <h4 className="mb-2 font-semibold">Accurate Scoring</h4>
-                <p className="text-muted-foreground">
-                  AI-powered pronunciation evaluation gives you precise scores
-                  from 0-100.
+                <h4 className="mb-2 text-xl font-[700] text-primary">Clear & Easy</h4>
+                <p className="text-foreground/70">
+                  Simple lessons that are easy to understand and fun to practice!
                 </p>
               </div>
             </div>
 
-            <div className="flex gap-4">
-              <Zap className="h-6 w-6 flex-shrink-0 text-secondary" />
+            <div className="card-cute flex gap-4 items-start">
+              <div className="text-4xl flex-shrink-0">🌈</div>
               <div>
-                <h4 className="mb-2 font-semibold">Interactive Learning</h4>
-                <p className="text-muted-foreground">
-                  Engage with flashcards, listen to native speakers, and
-                  practice at your own pace.
+                <h4 className="mb-2 text-xl font-[700] text-secondary">Colorful Design</h4>
+                <p className="text-foreground/70">
+                  Bright, friendly colors that make learning exciting and enjoyable!
                 </p>
               </div>
             </div>
 
-            <div className="flex gap-4">
-              <Award className="h-6 w-6 flex-shrink-0 text-accent" />
+            <div className="card-cute flex gap-4 items-start">
+              <div className="text-4xl flex-shrink-0">💪</div>
               <div>
-                <h4 className="mb-2 font-semibold">Progress Tracking</h4>
-                <p className="text-muted-foreground">
-                  Monitor your improvement with detailed statistics and
-                  performance history.
+                <h4 className="mb-2 text-xl font-[700] text-accent">Build Confidence</h4>
+                <p className="text-foreground/70">
+                  Positive feedback and encouragement to help you improve every day!
                 </p>
               </div>
             </div>
 
-            <div className="flex gap-4">
-              <BookOpen className="h-6 w-6 flex-shrink-0 text-primary" />
+            <div className="card-cute flex gap-4 items-start">
+              <div className="text-4xl flex-shrink-0">🎉</div>
               <div>
-                <h4 className="mb-2 font-semibold">Child-Friendly</h4>
-                <p className="text-muted-foreground">
-                  Encouraging feedback and positive reinforcement designed for
-                  young learners.
+                <h4 className="mb-2 text-xl font-[700] text-primary">Have Fun!</h4>
+                <p className="text-foreground/70">
+                  Learning should be fun! We make pronunciation practice enjoyable!
                 </p>
               </div>
             </div>
@@ -190,39 +187,40 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="bg-gradient-to-r from-primary to-secondary py-20 text-center text-white">
+      <section className="bg-gradient-to-r from-primary via-secondary to-accent py-16 md:py-24 text-center text-white rounded-3xl mx-4 md:mx-8 mb-8">
         <div className="container mx-auto px-4">
-          <h3 className="mb-4 text-3xl font-bold">Ready to Improve?</h3>
-          <p className="mb-8 text-lg opacity-90">
-            Start your pronunciation journey today with Phonics Master.
+          <div className="text-5xl md:text-6xl mb-4">🚀</div>
+          <h3 className="mb-4 text-3xl md:text-4xl font-[700]">Ready to Start Learning?</h3>
+          <p className="mb-8 text-lg md:text-xl opacity-95">
+            Join Phonics Master today and become a pronunciation expert! 🌟
           </p>
           {isAuthenticated ? (
             <Button
               size="lg"
-              variant="secondary"
-              className="gap-2"
+              className="bg-white text-primary hover:bg-white/90 font-[700] text-lg gap-2"
               onClick={() => setLocation("/units")}
             >
-              <Zap className="h-5 w-5" />
-              Begin Practice
+              <Sparkles className="h-5 w-5" />
+              Begin Practice Now! 🎊
             </Button>
           ) : (
             <Button
               size="lg"
-              variant="secondary"
-              className="gap-2"
+              className="bg-white text-primary hover:bg-white/90 font-[700] text-lg gap-2"
               onClick={() => (window.location.href = getLoginUrl())}
             >
-              <Zap className="h-5 w-5" />
-              Sign Up Now
+              <Sparkles className="h-5 w-5" />
+              Sign Up & Start! 🎉
             </Button>
           )}
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-border bg-card/50 py-8 text-center text-muted-foreground">
-        <p>© 2026 Phonics Master. All rights reserved.</p>
+      <footer className="border-t-2 border-primary/20 bg-white/50 py-8 text-center text-foreground/60">
+        <p className="text-lg">
+          💖 Made with love for young learners | © 2026 Phonics Master
+        </p>
       </footer>
     </div>
   );
